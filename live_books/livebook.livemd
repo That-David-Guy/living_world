@@ -1,0 +1,13 @@
+# Living World
+
+## Overview
+
+This livebook demonstrates how to create a world using the `living_world` library. It also breaks down every step.
+
+## Perlin Noise Generator
+
+All worlds start with a random noise generator. In this case we use a perlin noise generator as it creates smooth transitions between the randomness.
+
+```elixir
+
+```
