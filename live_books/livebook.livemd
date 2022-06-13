@@ -2,12 +2,222 @@
 
 ## Overview
 
-This livebook demonstrates how to create a world using the `living_world` library. It also breaks down every step.
+This livebook demonstrates how to create a world using the `living_world` library. 
+It also breaks down every step needed to create a 2-d landmass with mountains and oceans.
+
+## Helper Functions
+
+```elixir
+alias VegaLite, as: Vl
+
+# Helper functions
+graph_2d = fn graph_data ->
+  Vl.new(width: 300, height: 300)
+  |> Vl.data_from_values(graph_data)
+  |> Vl.mark(:rect)
+  |> Vl.encode_field(:x, "x")
+  |> Vl.encode_field(:y, "y")
+  |> Vl.encode_field(:color, "noise", type: :quantitative)
+  |> Vl.config(view: [stroke: nil])
+end
+
+graph_1d = fn graph_data ->
+  Vl.new(width: 600, height: 200)
+  |> Vl.data_from_values(graph_data)
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "x")
+  |> Vl.encode_field(:y, "noise", type: :quantitative)
+  |> Vl.encode_field(:color, "name", type: :nominal)
+end
+
+graph_1d_slice = fn graph_data ->
+  Vl.new(width: 600, height: 200)
+  |> Vl.data_from_values(graph_data)
+  |> Vl.transform(filter: [and: [[field: "y", equal: "1"]]])
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "x")
+  |> Vl.encode_field(:y, "noise", type: :quantitative)
+end
+```
 
 ## Perlin Noise Generator
 
-All worlds start with a random noise generator. In this case we use a perlin noise generator as it creates smooth transitions between the randomness.
+All worlds start with a random noise generator. 
+We will use a perlin noise generator as it creates smooth transitions between the 
+randomness.
+
+In this case, we are using the perline noise generator from  
+https://gist.github.com/sgeos/f476d4c9d4133916771b6d39d46ce50a
+
+The most basic function is `ClassicNoise.noise(x, y, z)` will return a consistent 
+value for that position
+
+```elixir
+alias LivingWorld.Noise.ClassicNoise
+
+ClassicNoise.noise(2, 2, 1.2)
+```
+
+You can visualise the values that `ClassicNoise.noise(x, y, z)` returns over a 2d map. 
+This makes it clearer to see how the values smoothly change from one two another
+
+```elixir
+# Fix the z-dimesion since we are creating a 2-d map
+z = 1.2
+
+graph_data =
+  for x <- 0..50, y <- 0..50 do
+    %{"x" => x, "y" => y, "z" => z, "noise" => ClassicNoise.noise(x, y, z)}
+  end
+```
+
+You can use a graph to visualise this data
+
+```elixir
+graph_2d.(graph_data)
+```
+
+In the above graph, instead of a normal static like on the old tvs, this has *groups* of 
+high and low values. i.e you very rarely get a single very low value in the middle of a bunch of high values. Especially when you zoom out as shown in the next section.
+
+This will be the basis for the mountains and oceans. 
+Though another layer of abstraction will be needed over the top.
+
+You can look at a single strip to see what the landscape would look like side on.
+
+```elixir
+graph_1d_slice.(graph_data)
+```
+
+It's something, but not quite the mountain range view we are wanting. 
+For that we need to start layering the perlin noise over itself.
+
+## Noise Wave Properties
+
+A single noise wave has scale, amplitude and frequency. They affects the value of the noise as shown below:
+
+```elixir
+noise_data_point = fn name, x, y, scale, amplitude, frequency ->
+  %{
+    "name" => name,
+    "x" => x / scale,
+    "y" => y / scale,
+    "noise" =>
+      amplitude * ClassicNoise.noise(x / (scale * frequency), y / (scale * frequency), 1.1)
+  }
+end
+```
+
+### Scale
+
+Scale is like zooming in and out of the noise. By default you are very close, as you zoom out you can see more of the smooth pattern.
+
+```elixir
+for x <- 0..50, y <- 0..50 do
+  noise_data_point.("Scale: 1", x, y, 1, 1, 1)
+end
+|> graph_2d.()
+```
+
+```elixir
+for x <- 0..50, y <- 0..50 do
+  noise_data_point.("Scale: 5", x, y, 5, 1, 1)
+end
+|> graph_2d.()
+```
+
+### Amplitude
+
+<!-- livebook:{"break_markdown":true} -->
+
+Amplitude is how pronouned the peaks of the noise wave are. A higher amplitude is more pronounced. The graph below shows the same noise wave with 3 different amplitudes applied. The wave has been zoomed out to better see the effect that Amplitude has.
+
+```elixir
+0..50
+|> Enum.flat_map(fn
+  x ->
+    [
+      noise_data_point.("Amplitude: 1", x, 1, 5, 1, 1),
+      noise_data_point.("Amplitude: 3.5", x, 1, 5, 3.5, 1),
+      noise_data_point.("Amplitude: 0.3", x, 1, 5, 0.3, 1)
+    ]
+end)
+|> graph_1d.()
+```
+
+### Frequency
+
+<!-- livebook:{"break_markdown":true} -->
+
+Frequency relates to the distance between the peaks in the wave. The higher the frequency the more space between the peaks. The graph below shows the same noise wave with 2 different frequencies applied.
+
+```elixir
+0..50
+|> Enum.flat_map(fn
+  x ->
+    [
+      noise_data_point.("Frequency: 1", x, 1, 5, 1, 1),
+      noise_data_point.("Frequency: 1.1", x, 1, 5, 1, 1.1)
+    ]
+end)
+|> graph_1d.()
+```
+
+## Layering Perlin Noise
+
+When thinking about a land mass, there are three levels of detail we want to display:
+
+1. The general outline of the land mass
+2. The boulders
+3. The small rocks.
+
+A single 2d noise map could show one of these, but not all three. To make it work we can layer the perlin noise overitself which will will give the intended effects.
+
+The new properties to know are _ocatives_, _persistance_, _lacunarity_. They are used as so:
+
+```elixir
+do_octaves = fn x, y, octaves, persistance, lacunarity, name, scale ->
+  0..octaves
+  |> Enum.reduce(
+    %{
+      amplitude: 1,
+      frequency: 1,
+      value: 0
+    },
+    fn _, acc ->
+      IO.inspect("do_octave")
+      # TODO Think about this more, you are getting the value + info, but need to modify the value
+      noise_data_point.(name, x, y, scale, acc.amplitude, acc.frequency)
+      |> IO.inspect()
+      |> Map.update("noise", 0, &(&1 + Map.get(acc.value, "noise")))
+      |> IO.inspect()
+      |> then(
+        &%{
+          amplitude: acc.amplitude * persistance,
+          frequency: acc.frequency * lacunarity,
+          value: &1
+        }
+      )
+    end
+  )
+end
+
+do_octaves.(1, 1, 1, 1, 1, "test", 5)
+```
+
+### Ocatives
+
+Ocatives are the number of times to layer the perlin noise over itself. The persistance and lacunarity values are modified every loop.
 
 ```elixir
 
+```
+
+```elixir
+debug_test = fn
+  x when x == 3 -> "hi #{x}"
+  x -> "there #{x}"
+end
+
+debug_test.(3)
 ```
