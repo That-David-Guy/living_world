@@ -97,20 +97,32 @@ For that we need to start layering the perlin noise over itself.
 A single noise wave has scale, amplitude and frequency. They affects the value of the noise as shown below:
 
 ```elixir
-noise_data_point = fn name, x, y, scale, amplitude, frequency ->
+noise_value = fn x, y, scale, amplitude, frequency ->
+  # HERE is scale, amplitude & frequency being used
+  sample_x = x / scale * frequency
+  sample_y = y / scale * frequency
+
+  amplitude * ClassicNoise.noise(sample_x, sample_y, 1.1)
+end
+
+noise_value_to_data_point = fn noise, name, x, y, scale ->
   %{
     "name" => name,
     "x" => x / scale,
     "y" => y / scale,
-    "noise" =>
-      amplitude * ClassicNoise.noise(x / (scale * frequency), y / (scale * frequency), 1.1)
+    "noise" => noise
   }
+end
+
+noise_data_point = fn name, x, y, scale, amplitude, frequency ->
+  noise_value.(x, y, scale, amplitude, frequency)
+  |> noise_value_to_data_point.(name, x, y, scale)
 end
 ```
 
 ### Scale
 
-Scale is like zooming in and out of the noise. By default you are very close, as you zoom out you can see more of the smooth pattern.
+Scale is like zooming in and out of the noise. By default you are very far away, as you change the scale out you can see more of the smooth pattern.
 
 ```elixir
 for x <- 0..50, y <- 0..50 do
@@ -121,7 +133,7 @@ end
 
 ```elixir
 for x <- 0..50, y <- 0..50 do
-  noise_data_point.("Scale: 5", x, y, 5, 1, 1)
+  noise_data_point.("Scale: 5", x, y, 20, 1, 1)
 end
 |> graph_2d.()
 ```
@@ -149,7 +161,7 @@ end)
 
 <!-- livebook:{"break_markdown":true} -->
 
-Frequency relates to the distance between the peaks in the wave. The higher the frequency the more space between the peaks. The graph below shows the same noise wave with 2 different frequencies applied.
+Frequency relates to the distance between the peaks in the wave. The higher the frequency the less space between the peaks. The graph below shows the same noise wave with 2 different frequencies applied.
 
 ```elixir
 0..50
@@ -173,11 +185,12 @@ When thinking about a land mass, there are three levels of detail we want to dis
 
 A single 2d noise map could show one of these, but not all three. To make it work we can layer the perlin noise overitself which will will give the intended effects.
 
-The new properties to know are _ocatives_, _persistance_, _lacunarity_. They are used as so:
+The new properties to know are _ocatives_, _persistance_, _lacunarity_. They affect the _amplitude_ and _frequency_ as shown below:
 
 ```elixir
-do_octaves = fn x, y, octaves, persistance, lacunarity, name, scale ->
-  0..octaves
+do_octaves = fn name, x, y, num_octaves, persistance, lacunarity, scale ->
+  # Octaves are the number of iterations we will do over a single data point
+  0..(num_octaves - 1)
   |> Enum.reduce(
     %{
       amplitude: 1,
@@ -185,39 +198,112 @@ do_octaves = fn x, y, octaves, persistance, lacunarity, name, scale ->
       value: 0
     },
     fn _, acc ->
-      IO.inspect("do_octave")
-      # TODO Think about this more, you are getting the value + info, but need to modify the value
-      noise_data_point.(name, x, y, scale, acc.amplitude, acc.frequency)
-      |> IO.inspect()
-      |> Map.update("noise", 0, &(&1 + Map.get(acc.value, "noise")))
-      |> IO.inspect()
-      |> then(
-        &%{
-          amplitude: acc.amplitude * persistance,
-          frequency: acc.frequency * lacunarity,
-          value: &1
-        }
-      )
+      # Notice how persistance and lacunarity modify the amplitude and frequency
+      %{
+        amplitude: acc.amplitude * persistance,
+        frequency: acc.frequency * lacunarity,
+        value: acc.value + noise_value.(x, y, scale, acc.amplitude, acc.frequency)
+      }
     end
   )
+  |> then(& &1.value)
+  |> noise_value_to_data_point.(name, x, y, scale)
+end
+```
+
+```elixir
+# Helper functions
+
+scale_value = fn num, in_min, in_max, out_min, out_max ->
+  (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 end
 
-do_octaves.(1, 1, 1, 1, 1, "test", 5)
+normalise_octave_values = fn ocatves ->
+  {min_noise, max_noise} =
+    ocatves
+    |> Enum.reduce({nil, nil}, fn
+      %{"noise" => noise}, {nil, nil} ->
+        {noise, noise}
+
+      %{"noise" => noise}, {min_noise, max_noise} when noise > max_noise ->
+        {min_noise, noise}
+
+      %{"noise" => noise}, {min_noise, max_noise} when noise < min_noise ->
+        {noise, max_noise}
+
+      _, acc ->
+        acc
+    end)
+
+  ocatves
+  |> Enum.map(fn %{"noise" => noise} = data_point ->
+    scaled_noise_point = scale_value.(noise, min_noise, max_noise, -1, 1)
+    Map.put(data_point, "noise", scaled_noise_point)
+  end)
+end
 ```
 
 ### Ocatives
 
 Ocatives are the number of times to layer the perlin noise over itself. The persistance and lacunarity values are modified every loop.
 
-```elixir
+When persistance and lacunarity are set to 1, the effect is the same as changing the _scale_. If we normalise the values to between 1 and -1 then there is no difference.
 
+```elixir
+# Uncomment/comment the `normalise_octave_values` lines below to 
+# see how there is no difference when persistance and lacunarity are set to 1
+octaves_1_values =
+  0..100
+  |> Enum.map(&do_octaves.("Octaves: 1", &1, 1, 1, 1, 1, 5))
+
+# |> normalise_octave_values.()
+
+octaves_3_values =
+  0..100
+  |> Enum.map(&do_octaves.("Octaves: 3", &1, 1, 3, 1, 1, 5))
+
+# |> normalise_octave_values.() 
+
+(octaves_1_values ++ octaves_3_values)
+|> normalise_octave_values.()
+|> graph_1d.()
+```
+
+### Lacunarity
+
+The Lacurnarity modifies the frequency each octave. When combined with the octaves, it increases the bumpiness and the small scale.
+
+It is useful for small features, like rocks. The higher the value the more detail.
+
+```elixir
+lacunarity_1_values =
+  0..300
+  |> Enum.map(&do_octaves.("Lacunarity: 1", &1, 1, 3, 0.5, 1, 50))
+  |> normalise_octave_values.()
+
+lacunarity_3_values =
+  0..300
+  |> Enum.map(&do_octaves.("Lacunarity: 2", &1, 1, 5, 0.5, 2, 50))
+  |> normalise_octave_values.()
+
+(lacunarity_1_values ++ lacunarity_3_values)
+|> graph_1d.()
+```
+
+Here arethe same values but in a 2-dimensional space, it makes the gradient bumpy.
+
+```elixir
+for x <- 0..50, y <- 0..50 do
+  do_octaves.("Lacunarity: 1", x, y, 3, 0.5, 1, 25)
+end
+|> normalise_octave_values.()
+|> graph_2d.()
 ```
 
 ```elixir
-debug_test = fn
-  x when x == 3 -> "hi #{x}"
-  x -> "there #{x}"
+for x <- 0..50, y <- 0..50 do
+  do_octaves.("Lacunarity: 2", x, y, 3, 0.5, 2, 25)
 end
-
-debug_test.(3)
+|> normalise_octave_values.()
+|> graph_2d.()
 ```
