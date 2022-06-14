@@ -102,7 +102,7 @@ noise_value = fn x, y, scale, amplitude, frequency ->
   sample_x = x / scale * frequency
   sample_y = y / scale * frequency
 
-  amplitude * ClassicNoise.noise(sample_x, sample_y, 1.1)
+  amplitude * ClassicNoise.noise(sample_x, sample_y, 1)
 end
 
 noise_value_to_data_point = fn noise, name, x, y, scale ->
@@ -126,14 +126,14 @@ Scale is like zooming in and out of the noise. By default you are very far away,
 
 ```elixir
 for x <- 0..50, y <- 0..50 do
-  noise_data_point.("Scale: 1", x, y, 1, 1, 1)
+  noise_data_point.("Scale: 1", x, y, 1.1, 1, 1)
 end
 |> graph_2d.()
 ```
 
 ```elixir
 for x <- 0..50, y <- 0..50 do
-  noise_data_point.("Scale: 5", x, y, 20, 1, 1)
+  noise_data_point.("Scale: 20", x, y, 20, 1, 1)
 end
 |> graph_2d.()
 ```
@@ -243,7 +243,7 @@ normalise_octave_values = fn ocatves ->
 end
 ```
 
-### Ocatives
+### Octaves
 
 Ocatives are the number of times to layer the perlin noise over itself. The persistance and lacunarity values are modified every loop.
 
@@ -278,15 +278,15 @@ It is useful for small features, like rocks. The higher the value the more detai
 ```elixir
 lacunarity_1_values =
   0..300
-  |> Enum.map(&do_octaves.("Lacunarity: 1", &1, 1, 3, 0.5, 1, 50))
+  |> Enum.map(&do_octaves.("Lacunarity: 1", &1, 1, 3, 0.5, 1, 25))
   |> normalise_octave_values.()
 
-lacunarity_3_values =
+lacunarity_2_values =
   0..300
-  |> Enum.map(&do_octaves.("Lacunarity: 2", &1, 1, 5, 0.5, 2, 50))
+  |> Enum.map(&do_octaves.("Lacunarity: 2", &1, 1, 5, 0.5, 2, 25))
   |> normalise_octave_values.()
 
-(lacunarity_1_values ++ lacunarity_3_values)
+(lacunarity_1_values ++ lacunarity_2_values)
 |> graph_1d.()
 ```
 
@@ -307,3 +307,118 @@ end
 |> normalise_octave_values.()
 |> graph_2d.()
 ```
+
+### Persistance
+
+Persistance increases how much the small features impact the big features. The higher the persistance, the higher the impact.
+
+It does this by modifying the _amplitude_ each octave. So more octavies will cause more of an effect. Each iteration of thee octave will cause the persistance to have less of an effect.
+
+Below is the same noise wave, with two different persistance values. Notice the large value is more distorted.
+
+```elixir
+persistance_0_5_values =
+  0..300
+  |> Enum.map(&do_octaves.("Persistance: 0.5", &1, 1, 4, 0.5, 2, 25))
+  |> normalise_octave_values.()
+
+persistance_2_values =
+  0..300
+  |> Enum.map(&do_octaves.("Persistance: 2", &1, 1, 4, 2, 2, 25))
+  |> normalise_octave_values.()
+
+(persistance_0_5_values ++ persistance_2_values)
+|> graph_1d.()
+```
+
+Below is the same wave, with the same persistance, but different number of octaves. The one with the high octaves allows for the peristance to have more of an effect.
+
+```elixir
+octives_3_values =
+  0..300
+  |> Enum.map(&do_octaves.("Ocatives: 3", &1, 1, 3, 1.1, 2, 25))
+  |> normalise_octave_values.()
+
+octavies_5_values =
+  0..300
+  |> Enum.map(&do_octaves.("Ocatives: 15", &1, 1, 15, 1.1, 2, 25))
+  |> normalise_octave_values.()
+
+(octives_3_values ++ octavies_5_values)
+|> graph_1d.()
+```
+
+However, if you keep the persistance between 0 & 1, it will still keep it's rough shape even when distored.
+
+```elixir
+octives_3_values =
+  0..300
+  |> Enum.map(&do_octaves.("Ocatives: 3", &1, 1, 3, 0.9, 2, 25))
+  |> normalise_octave_values.()
+
+octavies_5_values =
+  0..300
+  |> Enum.map(&do_octaves.("Ocatives: 15", &1, 1, 15, 0.9, 2, 25))
+  |> normalise_octave_values.()
+
+(octives_3_values ++ octavies_5_values)
+|> graph_1d.()
+```
+
+## Creating Landmasses
+
+Using octavies, persistance and lacunarity, we know have enough to create realistic looking landmasses.
+
+The trick is to work out what values to use. Let's create a nice looking 1d (side-view) landmass that looks like a mountain.
+
+```elixir
+landmass =
+  for x <- 0..50, y <- 0..50 do
+    do_octaves.("Lacunarity: 2", x, y, 3, 0.5, 2.5, 50)
+  end
+  |> normalise_octave_values.()
+
+landmass
+|> graph_1d_slice.()
+```
+
+Looks, pretty good. What does it look like in 2d (top-down view)
+
+```elixir
+landmass
+|> graph_2d.()
+```
+
+Add some colour based on height and it looks like a landmass!. Reminder that we have normalised all the values to between -1 and 1.
+
+```elixir
+Vl.new(width: 300, height: 300)
+|> Vl.data_from_values(landmass)
+|> Vl.transform(
+  calculate: "datum.noise < -0.3 ? 'deep-sea' 
+    : datum.noise < 0 ? 'sea' 
+    : datum.noise < 0.1 ? 'sand' 
+    : datum.noise < 0.3 ? 'grass' 
+    : datum.noise < 0.7 ? 'trees' 
+    : datum.noise < 0.9 ? 'mountain' 
+    : 'snow'",
+  as: "land_type"
+)
+|> Vl.mark(:rect)
+|> Vl.encode_field(:x, "x")
+|> Vl.encode_field(:y, "y")
+|> Vl.encode_field(
+  :color,
+  "land_type",
+  type: :nominal,
+  scale: [
+    domain: ["deep-sea", "sea", "sand", "grass", "trees", "mountain", "snow"],
+    range: ["#1e40af", "#3b82f6", "#fef08a", "#84cc16", "#4d7c0f", "#a1a1aa", "#f4f4f5"]
+  ]
+)
+|> Vl.config(view: [stroke: nil])
+```
+
+
+
+## ??WHATS WITH THE X Y BEING DECIMALS??
