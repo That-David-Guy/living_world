@@ -15,8 +15,8 @@ graph_2d = fn graph_data ->
   Vl.new(width: 300, height: 300)
   |> Vl.data_from_values(graph_data)
   |> Vl.mark(:rect)
-  |> Vl.encode_field(:x, "x")
-  |> Vl.encode_field(:y, "y")
+  |> Vl.encode_field(:x, "screen_x")
+  |> Vl.encode_field(:y, "screen_y")
   |> Vl.encode_field(:color, "noise", type: :quantitative)
   |> Vl.config(view: [stroke: nil])
 end
@@ -25,7 +25,7 @@ graph_1d = fn graph_data ->
   Vl.new(width: 600, height: 200)
   |> Vl.data_from_values(graph_data)
   |> Vl.mark(:line)
-  |> Vl.encode_field(:x, "x")
+  |> Vl.encode_field(:x, "screen_x")
   |> Vl.encode_field(:y, "noise", type: :quantitative)
   |> Vl.encode_field(:color, "name", type: :nominal)
 end
@@ -33,9 +33,9 @@ end
 graph_1d_slice = fn graph_data ->
   Vl.new(width: 600, height: 200)
   |> Vl.data_from_values(graph_data)
-  |> Vl.transform(filter: [and: [[field: "y", equal: "1"]]])
+  |> Vl.transform(filter: [and: [[field: "screen_y", equal: "1"]]])
   |> Vl.mark(:line)
-  |> Vl.encode_field(:x, "x")
+  |> Vl.encode_field(:x, "screen_x")
   |> Vl.encode_field(:y, "noise", type: :quantitative)
 end
 ```
@@ -67,7 +67,7 @@ z = 1.2
 
 graph_data =
   for x <- 0..50, y <- 0..50 do
-    %{"x" => x, "y" => y, "z" => z, "noise" => ClassicNoise.noise(x, y, z)}
+    %{"screen_x" => x, "screen_y" => y, "z" => z, "noise" => ClassicNoise.noise(x, y, z)}
   end
 ```
 
@@ -90,7 +90,7 @@ graph_1d_slice.(graph_data)
 ```
 
 It's something, but not quite the mountain range view we are wanting. 
-For that we need to start layering the perlin noise over itself.
+For that let's first understand the properties of a single wave. Then use that knowledge to layer the perlin noise over itself.
 
 ## Noise Wave Properties
 
@@ -110,6 +110,8 @@ noise_value_to_data_point = fn noise, name, x, y, scale ->
     "name" => name,
     "x" => x / scale,
     "y" => y / scale,
+    "screen_x" => x,
+    "screen_y" => y,
     "noise" => noise
   }
 end
@@ -122,7 +124,7 @@ end
 
 ### Scale
 
-Scale is like zooming in and out of the noise. By default you are very far away, as you change the scale out you can see more of the smooth pattern.
+Scale is like zooming in and out of the noise. By default you are very close, as you scale out you can see more of the smooth pattern.
 
 ```elixir
 for x <- 0..50, y <- 0..50 do
@@ -142,7 +144,7 @@ end
 
 <!-- livebook:{"break_markdown":true} -->
 
-Amplitude is how pronouned the peaks of the noise wave are. A higher amplitude is more pronounced. The graph below shows the same noise wave with 3 different amplitudes applied. The wave has been zoomed out to better see the effect that Amplitude has.
+Amplitude is how pronounced the peaks of the noise wave are. A higher amplitude is more pronounced. The graph below shows the same noise wave with 3 different amplitudes applied. The wave has been zoomed out to better see the effect that Amplitude has.
 
 ```elixir
 0..50
@@ -312,7 +314,7 @@ end
 
 Persistance increases how much the small features impact the big features. The higher the persistance, the higher the impact.
 
-It does this by modifying the _amplitude_ each octave. So more octavies will cause more of an effect. Each iteration of thee octave will cause the persistance to have less of an effect.
+It does this by modifying the _amplitude_ each octave. So more octaves will cause more of an effect. Each iteration of the octave will cause the persistance to have less of an effect.
 
 Below is the same noise wave, with two different persistance values. Notice the large value is more distorted.
 
@@ -367,7 +369,7 @@ octavies_5_values =
 
 ## Creating Landmasses
 
-Using octavies, persistance and lacunarity, we know have enough to create realistic looking landmasses.
+Using octavies, persistance and lacunarity, we now have enough to create realistic looking landmasses.
 
 The trick is to work out what values to use. Let's create a nice looking 1d (side-view) landmass that looks like a mountain.
 
@@ -405,8 +407,8 @@ Vl.new(width: 300, height: 300)
   as: "land_type"
 )
 |> Vl.mark(:rect)
-|> Vl.encode_field(:x, "x")
-|> Vl.encode_field(:y, "y")
+|> Vl.encode_field(:x, "screen_x")
+|> Vl.encode_field(:y, "screen_y")
 |> Vl.encode_field(
   :color,
   "land_type",
@@ -419,6 +421,4 @@ Vl.new(width: 300, height: 300)
 |> Vl.config(view: [stroke: nil])
 ```
 
-
-
-## ??WHATS WITH THE X Y BEING DECIMALS??
+## Continue youtube video
