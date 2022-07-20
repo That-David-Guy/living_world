@@ -1,4 +1,4 @@
-defmodule LivingWorld.LivingWorld.Landmass.LandmassTest do
+defmodule LivingWorld.LivingWorld.LandmassTest do
    use ExUnit.Case, async: true
    alias LivingWorld.Landmass.Landmass
    doctest Landmass

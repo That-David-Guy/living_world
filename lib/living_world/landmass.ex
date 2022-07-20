@@ -1,4 +1,4 @@
-defmodule LivingWorld.Landmass.Landmass do
+defmodule LivingWorld.Landmass do
   @moduledoc """
     Generates a 2d landmass that can be rendered
   """
@@ -20,6 +20,6 @@ defmodule LivingWorld.Landmass.Landmass do
   def generate(width, height, options \\ []) do
     options = Keyword.validate!(options, @default_options)
 
-    %{width: width, height: height, options: options}
+    {:ok, %{width: width, height: height, options: options}}
   end
 end
