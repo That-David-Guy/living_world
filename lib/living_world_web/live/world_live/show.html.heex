@@ -1,0 +1,36 @@
+<h1>Show World</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.world_show_path(@socket, :show, @world)}>
+    <.live_component
+      module={LivingWorldWeb.WorldLive.FormComponent}
+      id={@world.id}
+      title={@page_title}
+      action={@live_action}
+      world={@world}
+      return_to={Routes.world_show_path(@socket, :show, @world)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Seed:</strong>
+    <%= @world.seed %>
+  </li>
+
+  <li>
+    <strong>Width:</strong>
+    <%= @world.width %>
+  </li>
+
+  <li>
+    <strong>Height:</strong>
+    <%= @world.height %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.world_show_path(@socket, :edit, @world), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.world_index_path(@socket, :index) %></span>

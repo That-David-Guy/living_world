@@ -34,3 +34,10 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 
 ## Commands That Have Been Run
+
+```
+mix phx.gen.live Worlds World worlds \
+    seed:integer \
+    width:integer \
+    height:integer
+```

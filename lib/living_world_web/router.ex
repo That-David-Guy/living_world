@@ -18,6 +18,13 @@ defmodule LivingWorldWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/worlds", WorldLive.Index, :index
+    live "/worlds/new", WorldLive.Index, :new
+    live "/worlds/:id/edit", WorldLive.Index, :edit
+
+    live "/worlds/:id", WorldLive.Show, :show
+    live "/worlds/:id/show/edit", WorldLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

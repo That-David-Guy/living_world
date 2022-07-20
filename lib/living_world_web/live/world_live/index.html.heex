@@ -1,0 +1,43 @@
+<h1>Listing Worlds</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.world_index_path(@socket, :index)}>
+    <.live_component
+      module={LivingWorldWeb.WorldLive.FormComponent}
+      id={@world.id || :new}
+      title={@page_title}
+      action={@live_action}
+      world={@world}
+      return_to={Routes.world_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Seed</th>
+      <th>Width</th>
+      <th>Height</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="worlds">
+    <%= for world <- @worlds do %>
+      <tr id={"world-#{world.id}"}>
+        <td><%= world.seed %></td>
+        <td><%= world.width %></td>
+        <td><%= world.height %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.world_show_path(@socket, :show, world) %></span>
+          <span><%= live_patch "Edit", to: Routes.world_index_path(@socket, :edit, world) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: world.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New World", to: Routes.world_index_path(@socket, :new) %></span>
