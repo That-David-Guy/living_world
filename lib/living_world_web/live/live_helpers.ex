@@ -27,26 +27,52 @@ defmodule LivingWorldWeb.LiveHelpers do
     assigns = assign_new(assigns, :return_to, fn -> nil end)
 
     ~H"""
-    <div id="modal" class="phx-modal fade-in" phx-remove={hide_modal()}>
-      <div
-        id="modal-content"
-        class="phx-modal-content fade-in-scale"
-        phx-click-away={JS.dispatch("click", to: "#close")}
-        phx-window-keydown={JS.dispatch("click", to: "#close")}
-        phx-key="escape"
-      >
-        <%= if @return_to do %>
-          <%= live_patch "✖",
-            to: @return_to,
-            id: "close",
-            class: "phx-modal-close",
-            phx_click: hide_modal()
-          %>
-        <% else %>
-         <a id="close" href="#" class="phx-modal-close" phx-click={hide_modal()}>✖</a>
-        <% end %>
+    <div  id="modal"
+          phx-remove={hide_modal()}
+          class="relative z-10"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true">
 
-        <%= render_slot(@inner_block) %>
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed z-10 inset-0 overflow-y-auto">
+        <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+          <div  id="modal-content"
+                phx-click-away={JS.dispatch("click", to: "#close")}
+                phx-window-keydown={JS.dispatch("click", to: "#close")}
+                phx-key="escape"
+                class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6">
+
+          <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+               <%= if @return_to do %>
+                <%= live_patch to: @return_to,
+                      id: "close",
+                      class: "bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+                      phx_click: hide_modal() do %>
+                  <span class="sr-only">Close</span>
+                  <!-- Heroicon name: outline/x -->
+                  <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                <% end %>
+              <% else %>
+                <button id="close"
+                        type="button"
+                        phx-click={hide_modal()}
+                        class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <span class="sr-only">Close</span>
+                  <!-- Heroicon name: outline/x -->
+                  <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              <% end %>
+            </div>
+
+            <%= render_slot(@inner_block) %>
+          </div>
+        </div>
       </div>
     </div>
     """
