@@ -1,28 +1,49 @@
 <div>
-  <h2><%= @title %></h2>
-
   <.form
-    let={f}
-    for={@changeset}
-    id="world-form"
-    phx-target={@myself}
-    phx-change="validate"
-    phx-submit="save">
-  
-    <%= label f, :seed %>
-    <%= number_input f, :seed %>
-    <%= error_tag f, :seed %>
-  
-    <%= label f, :width %>
-    <%= number_input f, :width %>
-    <%= error_tag f, :width %>
-  
-    <%= label f, :height %>
-    <%= number_input f, :height %>
-    <%= error_tag f, :height %>
-  
-    <div>
-      <%= submit "Save", phx_disable_with: "Saving..." %>
+      let={f}
+      for={@changeset}
+      id="world-form"
+      phx-target={@myself}
+      phx-change="validate"
+      phx-submit="save">
+    <div class="space-y-8">
+        <div>
+          <h3 class="text-lg leading-6 font-medium text-gray-900"><%= @title %></h3>
+          <p class="mt-1 text-sm text-gray-500">The same seed always creates the same world</p>
+        </div>
+        <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+          <div class="sm:col-span-2">
+            <%= label f, :seed, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= number_input f, :seed, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" %>
+              <%= error_tag f, :seed %>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <%= label f, :width, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= number_input f, :width, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" %>
+              <%= error_tag f, :width %>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <%= label f, :height, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= number_input f, :height, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" %>
+              <%= error_tag f, :height %>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="pt-7 mt-7 border-t border-gray-200">
+      <div class="flex justify-end">
+        <%= submit "Save", phx_disable_with: "Saving...", class: "ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
     </div>
   </.form>
 </div>
+
+

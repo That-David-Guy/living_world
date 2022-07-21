@@ -22,7 +22,7 @@ defmodule LivingWorldWeb.WorldLive.Index do
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New World")
+    |> assign(:page_title, "Create World")
     |> assign(:world, %World{})
   end
 
