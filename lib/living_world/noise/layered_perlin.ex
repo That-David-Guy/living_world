@@ -5,16 +5,20 @@ defmodule LivingWorld.Noise.LayeredPerlin do
 
   alias LivingWorld.Noise.ClassicNoise
 
-  def generate(width, height, num_octaves, persistance, lacunarity, scale) do
+  @default_settings %{lacunarity: 2.5, num_octaves: 3, persistance: 0.5, scale: 50}
+
+  #def generate(width, height, num_octaves, persistance, lacunarity, scale) do
+  def generate(width, height, settings \\ @default_settings) do
     for x <- 0..width, y <- 0..height do
-      layered_noise_at_point(x, y, num_octaves, persistance, lacunarity, scale)
+      layered_noise_at_point(x, y, settings)
     end
     |> normalise
   end
 
   # This is the layering part. Each octave is a layer.
-  defp layered_noise_at_point(x, y, num_octaves, persistance, lacunarity, scale) do
-    0..(num_octaves - 1)
+  # defp layered_noise_at_point(x, y, num_octaves, persistance, lacunarity, scale) do
+  defp layered_noise_at_point(x, y, settings) do
+    0..(settings.num_octaves - 1)
     |> Enum.reduce(
       %{
         amplitude: 1,
@@ -23,17 +27,17 @@ defmodule LivingWorld.Noise.LayeredPerlin do
       },
       fn _, %{amplitude: amplitude, frequency: frequency, value: value} ->
         %{
-          amplitude: amplitude * persistance,
-          frequency: frequency * lacunarity,
-          value: value + noise_at_point(x, y, scale, amplitude, frequency)
+          amplitude: amplitude * settings.persistance,
+          frequency: frequency * settings.lacunarity,
+          value: value + noise_at_point(x, y, settings.scale, amplitude, frequency)
         }
       end
     )
     |> then(& &1.value)
     |> then(&
       %{
-        "x" => x / scale, # Is this right? You'll work it out when zooming
-        "y" => y / scale,
+        "x" => x / settings.scale, # Is this right? You'll work it out when zooming
+        "y" => y / settings.scale,
         "screen_x" => x,
         "screen_y" => y,
         "noise" => &1

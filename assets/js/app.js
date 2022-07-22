@@ -26,12 +26,47 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", info => topbar.show())
 window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+
+// LIVEVIEW  (needs to go BEFORE liveSocket setup as Hooks is used in it )
+let Hooks = {}
+
+// Map stuff
+import {MapCanvas} from "./map_canvas"
+Hooks.WorldMapInit = {
+    mounted() {
+        // TODO The 400 width height shouldn't come from here?
+        // TODO Maybe I could remove the width and height all together?
+        // TODO Definitely remove it, it's a presentation concern as the maps as infinite.
+        const onEventFromMapCanvas = (name, payload) =>
+            this.pushEventTo(
+                this.el,
+                "event_from_map_canvas", 
+                { name: "request_data", payload: payload }
+                )
+
+        const mapCanvas = new MapCanvas(this.el, 400, 400, onEventFromMapCanvas)
+
+
+        const handleIncomingEvents = 
+            (event) => {
+                switch (event.name) {
+                    case "init_map_data":
+                        mapCanvas.initMapData(event.payload)
+                        break;
+                } 
+            }
+
+        this.handleEvent("event_for_map_canvas", handleIncomingEvents) 
+    }
+}
+
+
+let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

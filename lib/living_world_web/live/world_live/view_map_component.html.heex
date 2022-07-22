@@ -1,0 +1,15 @@
+<div id={@id}>
+  <canvas 
+    id={"canvas_landmass_#{@world.id || 0}"}
+    width="200"
+    height="200"
+    class="bg-blue-500 rounded-lg"
+    data-world-id={"#{@world.id}"}
+    phx-hook="WorldMapInit"
+    phx-target={@myself}
+    >
+  </canvas> 
+  <a href="#" phx-click="say_hello" phx-target={@myself}>
+  Say hello!
+</a>
+</div>
