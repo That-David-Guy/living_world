@@ -17,10 +17,10 @@ defmodule LivingWorld.Landmass do
       iex> LivingWorld.Landmass.Landmass.generate(200, 300, num_octaves: 3, persistance: 0.75, lacunarity: 3.5, scale: 25)
       %{width: 200, height: 300, options: [scale: 25, lacunarity: 3.5,persistance: 0.75,  num_octaves: 3]}
   """
-  def generate(width, height) do
+  def generate(width, height, seed) do
     # TODO We are ignoring the height for now
     landmass =
-      LayeredPerlin.generate(50, 50)
+      LayeredPerlin.generate(50, 50, seed)
       |> addBiomes
 
     {:ok, %{width: width, height: height, landmass: landmass}}

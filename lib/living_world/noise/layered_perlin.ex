@@ -8,16 +8,19 @@ defmodule LivingWorld.Noise.LayeredPerlin do
   @default_settings %{lacunarity: 2.5, num_octaves: 3, persistance: 0.5, scale: 50}
 
   #def generate(width, height, num_octaves, persistance, lacunarity, scale) do
-  def generate(width, height, settings \\ @default_settings) do
+  def generate(width, height, seed, settings \\ @default_settings) do
+    # We have a 2d map, so we can hijack the z-axis as a pseudo seed
+    # TODO This doesn't work when there is multiple on the same page?
+    z = 10*seed
     for x <- 0..width, y <- 0..height do
-      layered_noise_at_point(x, y, settings)
+      layered_noise_at_point(x, y, z, settings)
     end
     |> normalise
   end
 
   # This is the layering part. Each octave is a layer.
   # defp layered_noise_at_point(x, y, num_octaves, persistance, lacunarity, scale) do
-  defp layered_noise_at_point(x, y, settings) do
+  defp layered_noise_at_point(x, y, z, settings) do
     0..(settings.num_octaves - 1)
     |> Enum.reduce(
       %{
@@ -29,7 +32,7 @@ defmodule LivingWorld.Noise.LayeredPerlin do
         %{
           amplitude: amplitude * settings.persistance,
           frequency: frequency * settings.lacunarity,
-          value: value + noise_at_point(x, y, settings.scale, amplitude, frequency)
+          value: value + noise_at_point(x, y, z, settings.scale, amplitude, frequency)
         }
       end
     )
@@ -45,11 +48,12 @@ defmodule LivingWorld.Noise.LayeredPerlin do
     )
   end
 
-  defp noise_at_point(x, y, scale, amplitude, frequency) do
+  defp noise_at_point(x, y, z, scale, amplitude, frequency) do
     sample_x = x / scale * frequency
     sample_y = y / scale * frequency
+    sample_z = z / scale * frequency
 
-    amplitude * ClassicNoise.noise(sample_x, sample_y, 1)
+    amplitude * ClassicNoise.noise(sample_x, sample_y, sample_z)
   end
 
   defp normalise(octaves) do

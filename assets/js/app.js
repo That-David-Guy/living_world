@@ -42,23 +42,29 @@ Hooks.WorldMapInit = {
         // TODO The 400 width height shouldn't come from here?
         // TODO Maybe I could remove the width and height all together?
         // TODO Definitely remove it, it's a presentation concern as the maps as infinite.
-        const onEventFromMapCanvas = (name, payload) =>
+        const onEventFromMapCanvas = (name, origin_id, payload) => {
+            this.origin_id = origin_id // TODO Find a better way to do this
             this.pushEventTo(
                 this.el,
                 "event_from_map_canvas", 
-                { name: "request_data", payload: payload }
+                { name, origin_id, payload }
                 )
+            }
 
         const mapCanvas = new MapCanvas(this.el, 400, 400, onEventFromMapCanvas)
 
 
-        const handleIncomingEvents = 
+        // TODO This is being sent the same messge the same number of times there are maps on the page. This shoudln't happen
+        // TODO Google multiple stateful components on same page
+        const handleIncomingEvents =  
             (event) => {
-                switch (event.name) {
-                    case "init_map_data":
-                        mapCanvas.initMapData(event.payload)
-                        break;
-                } 
+                if (event.origin_id == this.origin_id) {
+                    switch (event.name) {
+                        case "init_map_data":
+                            mapCanvas.initMapData(event.payload)
+                            break;
+                    } 
+                }
             }
 
         this.handleEvent("event_for_map_canvas", handleIncomingEvents) 

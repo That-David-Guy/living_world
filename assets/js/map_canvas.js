@@ -17,10 +17,13 @@ class MapCanvas {
         this.height = height
         this.onEventFromMapCanvas = onEventFromMapCanvas
 
-
-        // TODO Handle if worldId is not set
-        console.log("MOUNTED!", parseInt(this.canvas.dataset.worldId))
-        this.onEventFromMapCanvas("request_data", parseInt(this.canvas.dataset.worldId))
+        // TODO Handle if these are not set
+        const payload = {
+            worldId: parseInt(this.canvas.dataset.worldId),
+            seed: parseInt(this.canvas.dataset.seed)
+        }
+        const origin_id = parseInt(this.canvas.dataset.worldId)
+        this.onEventFromMapCanvas("request_data", origin_id, payload)
 
         // TEST:
     }
