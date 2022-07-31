@@ -2,7 +2,7 @@
 
 ## Overview
 
-aThis livebook demonstrates how to create a world using the `living_world` library. 
+This livebook demonstrates how to create a world using the `living_world` library. 
 It also breaks down every step needed to create a 2-d landmass with mountains and oceans.
 
 ## Helper Functions
