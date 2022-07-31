@@ -3,9 +3,7 @@ defmodule LivingWorld.Worlds.World do
   import Ecto.Changeset
 
   schema "worlds" do
-    field :height, :integer
     field :seed, :integer
-    field :width, :integer
 
     timestamps()
   end
@@ -13,7 +11,7 @@ defmodule LivingWorld.Worlds.World do
   @doc false
   def changeset(world, attrs) do
     world
-    |> cast(attrs, [:seed, :width, :height])
-    |> validate_required([:seed, :width, :height])
+    |> cast(attrs, [:seed])
+    |> validate_required([:seed])
   end
 end

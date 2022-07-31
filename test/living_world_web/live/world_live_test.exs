@@ -4,9 +4,9 @@ defmodule LivingWorldWeb.WorldLiveTest do
   import Phoenix.LiveViewTest
   import LivingWorld.WorldsFixtures
 
-  @create_attrs %{height: 42, seed: 42, width: 42}
-  @update_attrs %{height: 43, seed: 43, width: 43}
-  @invalid_attrs %{height: nil, seed: nil, width: nil}
+  @create_attrs %{seed: 42}
+  @update_attrs %{seed: 43}
+  @invalid_attrs %{seed: nil}
 
   defp create_world(_) do
     world = world_fixture()

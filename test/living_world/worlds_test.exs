@@ -21,12 +21,10 @@ defmodule LivingWorld.WorldsTest do
     end
 
     test "create_world/1 with valid data creates a world" do
-      valid_attrs = %{height: 42, seed: 42, width: 42}
+      valid_attrs = %{seed: 42}
 
       assert {:ok, %World{} = world} = Worlds.create_world(valid_attrs)
-      assert world.height == 42
       assert world.seed == 42
-      assert world.width == 42
     end
 
     test "create_world/1 with invalid data returns error changeset" do
@@ -35,12 +33,10 @@ defmodule LivingWorld.WorldsTest do
 
     test "update_world/2 with valid data updates the world" do
       world = world_fixture()
-      update_attrs = %{height: 43, seed: 43, width: 43}
+      update_attrs = %{seed: 43}
 
       assert {:ok, %World{} = world} = Worlds.update_world(world, update_attrs)
-      assert world.height == 43
       assert world.seed == 43
-      assert world.width == 43
     end
 
     test "update_world/2 with invalid data returns error changeset" do

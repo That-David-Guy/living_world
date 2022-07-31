@@ -17,7 +17,7 @@ defmodule LivingWorldWeb.WorldLive.ViewMapComponent do
       case name do
         "request_data" ->
             # If you do any database calls, move to preload method
-            {:ok, landmass} = Landmass.generate(400, 400, payload["seed"])
+            {:ok, landmass} = Landmass.generate(payload["seed"])
 
             { :noreply,
             socket

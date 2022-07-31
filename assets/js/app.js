@@ -39,9 +39,6 @@ let Hooks = {}
 import {MapCanvas} from "./map_canvas"
 Hooks.WorldMapInit = {
     mounted() {
-        // TODO The 400 width height shouldn't come from here?
-        // TODO Maybe I could remove the width and height all together?
-        // TODO Definitely remove it, it's a presentation concern as the maps as infinite.
         const onEventFromMapCanvas = (name, origin_id, payload) => {
             this.origin_id = origin_id // TODO Find a better way to do this
             this.pushEventTo(
