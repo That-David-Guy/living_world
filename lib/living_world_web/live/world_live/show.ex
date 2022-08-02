@@ -1,7 +1,7 @@
 defmodule LivingWorldWeb.WorldLive.Show do
   use LivingWorldWeb, :live_view
 
-  alias LivingWorld.{Worlds, Landmass}
+  alias LivingWorld.Worlds
 
   @impl true
   def mount(_params, _session, socket) do
