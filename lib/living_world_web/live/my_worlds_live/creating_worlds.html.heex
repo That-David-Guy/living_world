@@ -1,0 +1,16 @@
+<h1>Which one looks most interesting?</h1>
+
+
+<div class="grid gap-4 grid-cols-3 grid-rows-3">
+<%= for world <- @potential_worlds do %>
+<div class="hover:bg-purple-600 rounded-lg p-1"
+        phx-click="pick_world" 
+        phx-value-seed={"#{world.seed}"}>
+    <.live_component
+        module={LivingWorldWeb.WorldLive.ViewMapComponent} 
+        id={"view-map-#{world.id}"}
+        world={world}
+    />
+</div>
+<% end %>
+</div>

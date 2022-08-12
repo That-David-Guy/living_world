@@ -27,6 +27,7 @@ defmodule LivingWorldWeb.Router do
     live "/worlds/:id/show/edit", WorldLive.Show, :edit
 
     live "/my_worlds", MyWorldsLive.Index, :index
+    live "/my_worlds/creating_worlds", MyWorldsLive.CreatingWorlds, :index
   end
 
   # Other scopes may use custom stacks.

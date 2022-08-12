@@ -18,7 +18,9 @@ defmodule LivingWorld.Worlds do
 
   """
   def list_worlds do
-    Repo.all(World)
+    World
+    |> order_by(desc: :inserted_at)
+    |> Repo.all
   end
 
   @doc """

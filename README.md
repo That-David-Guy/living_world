@@ -2,42 +2,39 @@
 
 To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+* Install dependencies with `mix deps.get`
+* Create and migrate your database with `mix ecto.setup`
+* Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ## Inspiration
+
 * From this youtube https://www.youtube.com/watch?v=wbpMiKiSKm8
 
 ## Livebook
-  * `livebook server`
+
+* `livebook server`
 
 ## Learn more
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
-
-
+* Official website: https://www.phoenixframework.org/
+* Guides: https://hexdocs.pm/phoenix/overview.html
+* Docs: https://hexdocs.pm/phoenix
+* Forum: https://elixirforum.com/c/phoenix-forum
+* Source: https://github.com/phoenixframework/phoenix
 
 ## Added
 
-  * Liveview
-  * Tailwind CSS
-  * Livebooks
-
+* Liveview
+* Tailwind CSS
+* Livebooks
 
 ## Commands That Have Been Run
 
-```
+``` bash
 mix phx.gen.live Worlds World worlds \
     seed:integer \
-    width:integer \
-    height:integer
 ```
