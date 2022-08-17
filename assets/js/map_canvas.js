@@ -10,7 +10,6 @@ const cell_colors = {
 
 class MapCanvas {
     constructor(canvas, width, height, onEventFromMapCanvas) {
-        console.log("MapCanvas")
         this.canvas = canvas
         this.context = canvas.getContext("2d")
         this.width = width

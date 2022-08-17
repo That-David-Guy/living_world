@@ -35,6 +35,7 @@ window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 // LIVEVIEW  (needs to go BEFORE liveSocket setup as Hooks is used in it )
 let Hooks = {}
 
+
 // Map stuff
 import {MapCanvas} from "./map_canvas"
 Hooks.WorldMapInit = {
@@ -49,8 +50,6 @@ Hooks.WorldMapInit = {
             }
 
         const mapCanvas = new MapCanvas(this.el, 400, 400, onEventFromMapCanvas)
-
-
         // TODO This is being sent the same messge the same number of times there are maps on the page. This shoudln't happen
         // TODO Google multiple stateful components on same page
         const handleIncomingEvents =  
@@ -69,7 +68,24 @@ Hooks.WorldMapInit = {
 }
 
 
-let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
+// Add alpine.js
+import Alpine from "alpinejs";
+
+window.Alpine = Alpine
+Alpine.start()
+
+let liveSocket = new LiveSocket("/live", Socket, 
+    { hooks: Hooks, 
+        params: {_csrf_token: csrfToken},
+        dom: {
+            onBeforeElUpdated(from, to) {
+                // from https://fullstackphoenix.com/tutorials/combine-phoenix-liveview-with-alpine-js
+                if (from._x_dataStack) {
+                    window.Alpine.clone(from, to)
+                }
+            }
+        }
+    })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
@@ -79,4 +95,5 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
 

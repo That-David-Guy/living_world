@@ -1,10 +1,65 @@
-<ul>
+<div class="ml-10 space-x-4">
 <%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+
+  <!-- This example requires Tailwind CSS v2.0+ -->
+  <div class="relative inline-block text-left"
+    x-data="{ open: false }">
+    
+    <button 
+      type="button" 
+      x-bind:class="
+        open 
+        ? 'inline-flex justify-center py-2 whitespace-nowrap text-base font-medium text-gray-900 hover:text-gray-900'
+        : 'inline-flex justify-center py-2 whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'"
+      id="menu-button" 
+      aria-expanded="true"
+      aria-haspopup="true"
+      @click="open = !open"
+      @keydown.escape.window="open = false"
+      @click.away="open = false"
+      >
+      <%= @current_user.email %>
+      <!-- Heroicon name: solid/chevron-down -->
+      <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+
+    <div 
+      class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" 
+      role="menu" 
+      aria-orientation="vertical" 
+      aria-labelledby="menu-button" 
+      tabindex="-1"
+      x-cloak
+      x-show="open"
+      x-transition:enter="transition ease-out duration-100"
+      x-transition:enter-start="transform opacity-0 scale-95"
+      x-transition:enter-end="transform opacity-100 scale-100"
+      x-transition:leave="transition ease-in duration-75"
+      x-transition:leave-start="transform opacity-100 scale-100"
+      x-transition:leave-end="transform opacity-0 scale-95"
+      >
+      <div class="py-1" role="none">
+        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+        <%= link "Settings", 
+          to: Routes.user_settings_path(@conn, :edit), 
+          class: "text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500", 
+          role: "menuitem",
+          tabindex: "-1"%>
+        <%= link "Sign out", 
+          to: Routes.user_session_path(@conn, :delete), 
+          method: :delete,
+          class: "text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500", 
+          role: "menuitem",
+          tabindex: "-1"%>
+      </div>
+    </div>
+  </div>
+  
 <% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+  <%= link "Sign in", to: Routes.user_session_path(@conn, :new) , class: "whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"%>
+  <%= link "Sign up", to: Routes.user_registration_path(@conn, :new), class: "button-primary"%>
 <% end %>
-</ul>
+
+</div>
