@@ -1,5 +1,12 @@
 <h1>My Worlds</h1>
 
+
+<%= if @current_user do %>
+    <%= @current_user.email %>
+<% else %>
+    <strong> NO USER!</strong>
+<% end %>
+
 <%= live_patch "Create New World", 
     to: Routes.my_worlds_creating_worlds_path(@socket, :index), 
     class: "button-primary" %>

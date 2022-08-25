@@ -29,8 +29,6 @@ defmodule LivingWorldWeb.Router do
     live "/worlds/:id", WorldLive.Show, :show
     live "/worlds/:id/show/edit", WorldLive.Show, :edit
 
-    live "/my_worlds", MyWorldsLive.Index, :index
-    live "/my_worlds/creating_worlds", MyWorldsLive.CreatingWorlds, :index
   end
 
   # Other scopes may use custom stacks.
@@ -68,6 +66,14 @@ defmodule LivingWorldWeb.Router do
   end
 
   ## Authentication routes
+
+  scope "/", LivingWorldWeb do
+    pipe_through [:browser, :require_authenticated_user]
+    live_session :require_auth, on_mount: [{LivingWorldWeb.LiveAuth, :require_authenticated_user}] do
+      live "/my_worlds", MyWorldsLive.Index, :index
+      live "/my_worlds/creating_worlds", MyWorldsLive.CreatingWorlds, :index
+    end
+  end
 
   scope "/", LivingWorldWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
