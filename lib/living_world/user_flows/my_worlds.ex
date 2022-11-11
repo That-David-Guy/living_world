@@ -6,8 +6,8 @@ defmodule LivingWorld.UserFlows.MyWorlds do
   """
   alias LivingWorld.Worlds
 
-  def list_my_worlds do
-    Worlds.list_worlds
+  def list_my_worlds(user_id) do
+    Worlds.list_worlds(user_id)
   end
 
   def list_randomised_worlds do
@@ -18,10 +18,8 @@ defmodule LivingWorld.UserFlows.MyWorlds do
     |> IO.inspect
   end
 
-  def pick_world(seed) do
-    IO.inspect(seed, label: "saving")
-
-    attrs = %{seed: seed}
+  def pick_world(seed, user_id) do
+    attrs = %{seed: seed, user_id: user_id}
     Worlds.create_world(attrs)
   end
 end

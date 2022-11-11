@@ -17,7 +17,7 @@ defmodule LivingWorldWeb.MyWorldsLive.CreatingWorlds do
 
   @impl true
   def handle_event("pick_world", %{"seed" => seed}, socket) do
-    case MyWorlds.pick_world(seed) do
+    case MyWorlds.pick_world(seed, socket.assigns.current_user.id) do
       {:ok, _world} ->
         {:noreply,
          socket

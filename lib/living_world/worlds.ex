@@ -8,6 +8,7 @@ defmodule LivingWorld.Worlds do
 
   alias LivingWorld.Worlds.World
 
+
   @doc """
   Returns the list of worlds.
 
@@ -17,8 +18,9 @@ defmodule LivingWorld.Worlds do
       [%World{}, ...]
 
   """
-  def list_worlds do
+  def list_worlds(user_id) do
     World
+    |> where([world], world.user_id == ^user_id)
     |> order_by(desc: :inserted_at)
     |> Repo.all
   end
@@ -37,7 +39,11 @@ defmodule LivingWorld.Worlds do
       ** (Ecto.NoResultsError)
 
   """
-  def get_world!(id), do: Repo.get!(World, id)
+  def get_world!(id, user_id) do
+    World
+    |> where([world], world.user_id == ^user_id)
+    |> Repo.get!(World, id)
+  end
 
   @doc """
   Creates a world.

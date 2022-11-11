@@ -9,6 +9,8 @@ const cell_colors = {
 }
 
 class MapCanvas {
+    // TODO Look at https://gist.github.com/Kaundur/2aca9a9edb003555f44195e826af4084
+    // For downloading images
     constructor(canvas, width, height, onEventFromMapCanvas) {
         this.canvas = canvas
         this.context = canvas.getContext("2d")

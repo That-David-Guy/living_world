@@ -6,7 +6,7 @@ defmodule LivingWorldWeb.MyWorldsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :worlds, list_my_worlds())}
+    {:ok, assign(socket, :worlds, list_my_worlds(socket.assigns.current_user.id))}
   end
 
   @impl true
@@ -15,7 +15,7 @@ defmodule LivingWorldWeb.MyWorldsLive.Index do
     {:noreply, socket}
   end
 
-  defp list_my_worlds do
-    MyWorlds.list_my_worlds()
+  defp list_my_worlds(user_id) do
+    MyWorlds.list_my_worlds(user_id)
   end
 end

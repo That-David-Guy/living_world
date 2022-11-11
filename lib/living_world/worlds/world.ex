@@ -4,6 +4,7 @@ defmodule LivingWorld.Worlds.World do
 
   schema "worlds" do
     field :seed, :integer
+    belongs_to :user, LivingWorld.Accounts.User
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule LivingWorld.Worlds.World do
   @doc false
   def changeset(world, attrs) do
     world
-    |> cast(attrs, [:seed])
-    |> validate_required([:seed])
+    |> cast(attrs, [:seed, :user_id])
+    |> validate_required([:seed, :user_id])
   end
 end
