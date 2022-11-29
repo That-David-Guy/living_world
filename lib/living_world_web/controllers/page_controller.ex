@@ -3,7 +3,9 @@ defmodule LivingWorldWeb.PageController do
   use LivingWorldWeb, :controller
 
   def mount(_session, socket) do
-    {:ok, socket}
+    {:ok, socket
+    |> put_flash(:error, "You have to Sign in to continue")
+    }
   end
 
   def index(conn, _params) do

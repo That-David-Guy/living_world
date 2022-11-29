@@ -1,13 +1,74 @@
-<div class="py-12 bg-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="lg:text-center">
-      <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">One Minute Worldbuidling</h2>
-    </div>
 
-    <div class="mt-10">
-      <%= link "Go To My Worlds", 
-        to: Routes.my_worlds_index_path(@conn, :index),
-        class: "button-primary" %>
+<%# Hero Title and text %>
+<div class="sm:px-8 mt-6">
+  <div class="mx-auto max-w-7xl lg:px-8">
+    <div class="relative px-4 sm:px-8 lg:px-12">
+      <div class="mx-auto max-w-2xl lg:max-w-5xl">
+        <div class="max-w-2xl">
+          <h1 class="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl">
+            One Minute Worldbuilding
+          </h1>
+          <p class="mt-6 text-base text-zinc-600">
+            <em>Choose the one you like! </em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# Promo Image Array %>
+<div class="mt-16 sm:mt-20">
+  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2 
+      border-8 border-white transition ease-in-out cursor-pointer hover:border-violet-500 hover:rotate-0">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+  </div>
+  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+  </div>
+  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
+    </div>
+    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
+      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
     </div>
   </div>
 </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-100">
+<html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -10,52 +10,49 @@
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
-  <body class="h-full">
-
-    <!-- This example requires Tailwind CSS v2.0+ -->
-<header>
-  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
-    <div class="w-full py-6 flex items-center justify-between lg:border-none">
-      <div class="flex items-center">
-        <a href="#">
-          <span>OneMinute<strong>Worldbuilding</strong></span>
-          <%# <img class="h-10 w-auto" src="https://tailwindui.com/img/logos/workflow-mark.svg?color=white" alt=""> %>
-        </a>
+<body class="flex h-full flex-col bg-zinc-50">
+  <div>
+    <div class="fixed inset-0 flex justify-center sm:px-8">
+      <div class="flex w-full max-w-7xl lg:px-8">
+        <div class="w-full bg-white ring-1 ring-zinc-100">
+        </div>
       </div>
-      <%= render "_user_menu.html", assigns %>
     </div>
-  </nav>
-</header>
 
-    <div class="min-h-full flex flex-col items-center pb-24">
-        <header>
-          <div class="max-w-7xl mx-auto py-6 px-4 sm:px-32 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900"> </h1>
-          </div>
-          <nav>
-          </nav>
-        </header>
-
-
-        <%= @inner_content %>
-    </div>
+    <div class="relative">
     
-    <footer class="bg-white">
-      <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-        <div class="flex justify-center space-x-6 md:order-2">
+      <%= render "_user_menu.html", assigns %>
 
-          <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-          <a href="#" class="text-gray-400 hover:text-gray-500">
-            <%= link "Live Dashboard", to: Routes.live_dashboard_path(@conn, :home) %>
+      
+      <%= @inner_content %>
+      
+      <footer class="mt-32">
+        <div class="sm:px-8">
+          <div class="mx-auto max-w-7xl lg:px-8">
+            <div class="border-t border-zinc-100 pt-10 pb-16">
+              <div class="relative px-4 sm:px-8 lg:px-12">
+                <div class="mx-auto max-w-2xl lg:max-w-5xl">
+                  <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+                    <div class="flex gap-6 text-sm font-medium text-zinc-800">
+                      <a class="transition hover:text-teal-500" href="/about">Github</a>
+                      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+                      <a href="#" class="transition hover:text-teal-500">
+                        <%= link "Live Dashboard", to: Routes.live_dashboard_path(@conn, :home) %>
 
-          </a>
-          <% end %>
-
+                      </a>
+                      <% end %>
+                    </div>
+                    <p class="text-sm text-zinc-400 dark:text-zinc-500">
+                      ♡ MakeAwesomeStuff
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="mt-8 md:mt-0 md:order-1">
-          <p class="text-center text-base text-gray-400">Make something awesome ~ David</p>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
+  </div>
   </body>
 </html>
