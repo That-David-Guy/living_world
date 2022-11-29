@@ -20,7 +20,7 @@ defmodule LivingWorldWeb.Router do
   scope "/", LivingWorldWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", HomeLive.Index
 
     live "/worlds", WorldLive.Index, :index
     live "/worlds/new", WorldLive.Index, :new
