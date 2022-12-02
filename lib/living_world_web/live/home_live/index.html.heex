@@ -17,57 +17,27 @@
 </div>
 
 <%# Promo Image Array %>
-<div class="mt-16 sm:mt-20">
-  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2 
-      border-8 border-white transition ease-in-out cursor-pointer hover:border-violet-500 hover:rotate-0">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
+<div class="mt-6">
+<%= for row_index <- 0..2 do%>
+  <div class="-my-4 flex justify-center gap-6 overflow-hidden py-4 sm:gap-8">
+  <%= for column_index <- 0..4 do%> 
+    <div class={"relative flex-none overflow-hidden rounded-xl bg-zinc-100 m:rounded-2xl
+      border-8 border-white transition ease-in-out cursor-pointer hover:border-violet-500 hover:rotate-0 
+      #{Enum.random(["rotate-2", "-rotate-2"])} 
+      "}>
+        <%#-- TODO Pass this in from the controller --%>
+        <.live_component
+            module={LivingWorldWeb.WorldLive.ViewMapComponent} 
+            id={"example-map-#{column_index}_#{row_index}"}
+            world={
+              %{
+                id: to_string(column_index) <> to_string(row_index) |> Integer.parse |> elem(0), 
+                seed: "#{column_index}#{row_index}123"
+              } 
+            }
+        />
+    </div> 
+  <% end %>
   </div>
-  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-  </div>
-  <div class="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-    <div class="relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl -rotate-2">
-      <img alt="" class="absolute inset-0 h-full w-full object-cover" sizes="(min-width: 640px) 18rem, 11rem" src="_" style="color:transparent">
-    </div>
-  </div>
+<% end %>
 </div>

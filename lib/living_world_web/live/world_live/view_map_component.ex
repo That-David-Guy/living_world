@@ -13,6 +13,7 @@ defmodule LivingWorldWeb.WorldLive.ViewMapComponent do
 
   @impl true
   def handle_event("event_from_map_canvas", %{"name" => name, "origin_id" => origin_id, "payload" => payload}, socket) do
+
     if socket.assigns.world.id == origin_id do
       case name do
         "request_data" ->

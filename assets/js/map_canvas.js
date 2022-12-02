@@ -23,7 +23,7 @@ class MapCanvas {
             worldId: parseInt(this.canvas.dataset.worldId),
             seed: parseInt(this.canvas.dataset.seed)
         }
-        const origin_id = parseInt(this.canvas.dataset.worldId)
+        const origin_id = parseInt(this.canvas.dataset.worldId) // TODO Does this *have* to be an int?
         this.onEventFromMapCanvas("request_data", origin_id, payload)
 
         // TEST:
