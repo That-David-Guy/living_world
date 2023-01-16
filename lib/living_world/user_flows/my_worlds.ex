@@ -1,6 +1,6 @@
 defmodule LivingWorld.UserFlows.MyWorlds do
   @moduledoc """
-    Funcations for handling the My Worlds user flows
+    Functions for handling the My Worlds user flows
 
     My Worlds user flow is when the user create and saves worlds for themselves
   """
